@@ -57,7 +57,10 @@ func (service *userServiceImpl) Init(db db.DbService) {
 }
 
 func (service *userServiceImpl) Insert(user *usermodel.UserModel) (*userdto.UserDTO, error) {
-	service.validateUniquePhone(user.PhoneNumber)
+	err := service.validateUniquePhone(user.PhoneNumber)
+	if err != nil {
+		return nil, err
+	}
 
 	pin, err := bcrypt.GenerateFromPassword([]byte(*user.Pin), bcrypt.DefaultCost)
 	if err != nil {

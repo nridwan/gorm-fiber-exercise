@@ -79,6 +79,8 @@ func (controller *userController) handleProfile(ctx *fiber.Ctx) error {
 		return fiber.NewError(400, err.Error())
 	}
 
+	user.CreatedAt = nil
+
 	return controller.responseService.SendSuccessResponse(ctx, 200, user)
 }
 
