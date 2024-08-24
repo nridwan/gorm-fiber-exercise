@@ -26,7 +26,7 @@ type JwtService interface {
 }
 
 func (service *JwtModule) errorHandler(ctx *fiber.Ctx, err error) error {
-	return service.responseService.SendErrorResponse(ctx, 401, err.Error(), nil)
+	return fiber.NewError(401, "Unauthenticated")
 }
 
 // impl `JwtService` start

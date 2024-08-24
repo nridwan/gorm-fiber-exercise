@@ -9,7 +9,7 @@ type ReadonlyUserModel struct {
 	FirstName   string `json:"first_name" gorm:"not null;"`
 	LastName    string `json:"last_name" gorm:"not null;"`
 	PhoneNumber string `json:"phone_number" gorm:"not null;unique;"`
-	Address     string `json:"address" gorm:"not null;unique;"`
+	Address     string `json:"address" gorm:"not null;"`
 }
 
 func (ReadonlyUserModel) TableName() string {

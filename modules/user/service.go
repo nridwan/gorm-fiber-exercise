@@ -42,9 +42,9 @@ func NewUserService(jwtService jwt.JwtService) UserService {
 }
 
 func (service *userServiceImpl) validateUniquePhone(phoneNumber string) error {
-	var user usermodel.UserModel
-	service.db.Where("phone_number = ?", phoneNumber).First(&user)
-	if user.ID != (uuid.UUID{}) {
+	var count int64
+	service.db.Model(&usermodel.UserModel{}).Where("phone_number = ?", phoneNumber).Count(&count)
+	if count > 0 {
 		return fiber.NewError(400, "Phone Number already registered")
 	}
 	return nil

@@ -48,14 +48,14 @@ func (service *JwtModule) CanAccess(c *fiber.Ctx, issuer string) error {
 	if service.checkUser(c, issuer, false) {
 		return c.Next()
 	}
-	return fiber.NewError(401, "Missing or malformed JWT")
+	return fiber.NewError(401, "Unauthenticated")
 }
 
 func (service *JwtModule) CanRefresh(c *fiber.Ctx, issuer string) error {
 	if service.checkUser(c, issuer, true) {
 		return c.Next()
 	}
-	return fiber.NewError(401, "Missing or malformed JWT")
+	return fiber.NewError(401, "Unauthenticated")
 }
 
 // impl `jwtCommonMiddleware` end
