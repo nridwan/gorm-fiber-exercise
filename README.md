@@ -16,5 +16,6 @@ Features:
 
 1. install go
 2. install air-verse/air: `go install github.com/air-verse/air@latest`
-3. run `go mod download`
-4. run `air`
+3. setup `.env`, see `.env.example`, self explanatory enough to be copied to `.env`
+4. run `go mod download`
+5. run `air`
