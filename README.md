@@ -6,12 +6,17 @@ Some feature will be preserved in my future go boilerplate.
 Features:
 
 - Graceful shutdown
-- Dependency Injection (manual & Fx)
+- Dependency Injection by FX
 - .env based config
 - Hot Reload
 - Gorm database model
 - JWT auth
 - Atlas Migration
+
+## Requirement
+
+- Golang
+- Postgresql
 
 ## How to run
 
