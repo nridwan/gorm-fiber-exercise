@@ -33,7 +33,9 @@ var FxModule = fx.Module("Transaction", fx.Provide(NewTransactionService), fx.Pr
 // implements `BaseModule` of `base/module.go` start
 
 func (module *TransactionModule) OnStart() error {
-	module.db.Default().AutoMigrate(&transactionsmodel.TransactionModel{})
+	if module.db.AutoMigrate() {
+		module.db.Default().AutoMigrate(&transactionsmodel.TransactionModel{})
+	}
 	module.Service.Init(module.db)
 	module.registerRoutes()
 	return nil

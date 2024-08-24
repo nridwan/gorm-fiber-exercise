@@ -9,8 +9,9 @@ import (
 )
 
 type DbModule struct {
-	config config.ConfigService
-	db     map[string]*gorm.DB
+	config      config.ConfigService
+	db          map[string]*gorm.DB
+	autoMigrate bool
 }
 
 func NewModule(config config.ConfigService) *DbModule {

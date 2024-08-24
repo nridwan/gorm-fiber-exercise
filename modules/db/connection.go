@@ -21,6 +21,7 @@ type DbService interface {
 	RemoveConfig(profName string)
 	Default() *gorm.DB
 	Get(profName string) *gorm.DB
+	AutoMigrate() bool
 }
 
 // DbProfile = db configuration
@@ -37,6 +38,7 @@ type DbProfile struct {
 }
 
 func (module *DbModule) addDefaultConfig() {
+	module.autoMigrate = module.config.Getenv("DB_AUTOMIGRATION", "") == "true"
 	module.AddConfig(DefaultDbKey, &DbProfile{
 		Connection: module.config.Getenv("DB_CONNECTION", ""),
 		Host:       module.config.Getenv("DB_HOST", ""),
@@ -104,7 +106,7 @@ func (module *DbModule) AddConfig(profName string, config *DbProfile) {
 		log.Fatalf("DB profile `%s` ping error: %v", profName, err)
 	}
 
-	if config.Connection == "postgres" {
+	if module.autoMigrate && config.Connection == "postgres" {
 		module.db[profName].Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
 	}
 
@@ -123,6 +125,10 @@ func (module *DbModule) Default() *gorm.DB {
 // Get : get DB profile
 func (module *DbModule) Get(profName string) *gorm.DB {
 	return module.db[profName]
+}
+
+func (module *DbModule) AutoMigrate() bool {
+	return module.autoMigrate
 }
 
 // impl `DbService` end

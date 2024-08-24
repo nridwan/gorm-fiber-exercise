@@ -31,7 +31,9 @@ var FxModule = fx.Module("User", fx.Provide(NewUserService), fx.Provide(newUserC
 // implements `BaseModule` of `base/module.go` start
 
 func (module *UserModule) OnStart() error {
-	module.db.Default().AutoMigrate(&usermodel.UserModel{})
+	if module.db.AutoMigrate() {
+		module.db.Default().AutoMigrate(&usermodel.UserModel{})
+	}
 	module.Service.Init(module.db)
 	module.registerRoutes()
 	return nil
