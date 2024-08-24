@@ -71,7 +71,7 @@ func (controller *userController) handleProfile(ctx *fiber.Ctx) error {
 	id, err := utils.GetFiberJwtUserId(ctx)
 
 	if err == nil {
-		user, err = controller.service.AddBalance(id, 10000)
+		user, err = controller.service.Detail(id)
 	}
 
 	if err != nil {

@@ -23,12 +23,12 @@ type UserService interface {
 	jwt.JwtMiddleware
 	Init(db db.DbService)
 	Insert(user *usermodel.UserModel) (*userdto.UserDTO, error)
-	Update(idString string, updateDTO *userdto.UpdateUserDTO) (*userdto.UserDTO, error)
+	Update(id uuid.UUID, updateDTO *userdto.UpdateUserDTO) (*userdto.UserDTO, error)
 	List(req *appmodel.GetListRequest) (*appmodel.PaginationResponseList, error)
-	Detail(idString string) (*userdto.UserDTO, error)
-	Delete(idString string) error
+	Detail(id uuid.UUID) (*userdto.UserDTO, error)
+	Delete(id uuid.UUID) error
 	Login(req *userdto.LoginDTO) (*userdto.LoginResponseDTO, error)
-	AddBalance(idString string, balance int) (*userdto.UserDTO, error)
+	AddBalance(id uuid.UUID, balance int) (*userdto.UserDTO, error)
 }
 
 type userServiceImpl struct {
@@ -75,12 +75,7 @@ func (service *userServiceImpl) Insert(user *usermodel.UserModel) (*userdto.User
 	return dto, result.Error
 }
 
-func (service *userServiceImpl) Update(idString string, updateDTO *userdto.UpdateUserDTO) (*userdto.UserDTO, error) {
-	id, err := uuid.Parse(idString)
-	if err != nil {
-		return nil, err
-	}
-
+func (service *userServiceImpl) Update(id uuid.UUID, updateDTO *userdto.UpdateUserDTO) (*userdto.UserDTO, error) {
 	if updateDTO.Password != nil {
 		pwd, err := bcrypt.GenerateFromPassword([]byte(*updateDTO.Password), bcrypt.DefaultCost)
 		if err != nil {
@@ -94,7 +89,7 @@ func (service *userServiceImpl) Update(idString string, updateDTO *userdto.Updat
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return service.Detail(idString)
+	return service.Detail(id)
 }
 
 func (service *userServiceImpl) List(req *appmodel.GetListRequest) (*appmodel.PaginationResponseList, error) {
@@ -148,23 +143,13 @@ func (service *userServiceImpl) List(req *appmodel.GetListRequest) (*appmodel.Pa
 	}, nil
 }
 
-func (service *userServiceImpl) Detail(idString string) (*userdto.UserDTO, error) {
-	id, err := uuid.Parse(idString)
-	if err != nil {
-		return nil, err
-	}
-
+func (service *userServiceImpl) Detail(id uuid.UUID) (*userdto.UserDTO, error) {
 	var user usermodel.UserModel
 	result := service.db.First(&user, id)
 	return userdto.MapUserModelToDTO(&user), result.Error
 }
 
-func (service *userServiceImpl) Delete(idString string) error {
-	id, err := uuid.Parse(idString)
-	if err != nil {
-		return err
-	}
-
+func (service *userServiceImpl) Delete(id uuid.UUID) error {
 	var user userdto.UserDTO
 	result := service.db.Delete(&user, id)
 	return result.Error
@@ -186,9 +171,9 @@ func (service *userServiceImpl) Login(req *userdto.LoginDTO) (response *userdto.
 	return
 }
 
-func (service *userServiceImpl) AddBalance(idString string, balance int) (*userdto.UserDTO, error) {
+func (service *userServiceImpl) AddBalance(id uuid.UUID, balance int) (*userdto.UserDTO, error) {
 	var user usermodel.UserModel
-	response := service.db.Model(&user).Where("id = ? and balance >= ?", idString, -balance).Update("balance", gorm.Expr("balance + ?", balance))
+	response := service.db.Model(&user).Where("id = ? and balance >= ?", id, -balance).Update("balance", gorm.Expr("balance + ?", balance))
 	if response.Error != nil {
 		return nil, response.Error
 	}
@@ -197,7 +182,7 @@ func (service *userServiceImpl) AddBalance(idString string, balance int) (*userd
 		return nil, fiber.NewError(400, "Balance is not enough")
 	}
 
-	return service.Detail(idString)
+	return service.Detail(id)
 }
 
 // impl `UserService` end
