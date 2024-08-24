@@ -138,7 +138,7 @@ func (service *transactionServiceImpl) Report(userId uuid.UUID) ([]*transactions
 	query := service.db.Model(transactions)
 
 	// Perform count and find concurrently using goroutines
-	err := query.Where("user_id = ?", userId).Find(&transactions).Error
+	err := query.Where("user_id = ?", userId).Order("created_at DESC").Find(&transactions).Error
 
 	if err != nil {
 		return nil, err
