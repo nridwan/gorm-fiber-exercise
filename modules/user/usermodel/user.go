@@ -8,7 +8,7 @@ type UserModel struct {
 	LastName    string  `json:"last_name" gorm:"not null;"`
 	PhoneNumber string  `json:"phone_number" gorm:"not null;unique;"`
 	Address     string  `json:"address" gorm:"not null;"`
-	Pin         *string `json:"pin" gorm:"not null;"`
+	Pin         *string `json:"-" gorm:"not null;"`
 	Balance     int     `json:"balance" gorm:"not null;default:0;"`
 }
 

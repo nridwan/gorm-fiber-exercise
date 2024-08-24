@@ -71,6 +71,7 @@ func (service *userServiceImpl) Insert(user *usermodel.UserModel) (*userdto.User
 	user.Pin = &pinString
 	result := service.db.Create(user)
 	dto := userdto.MapUserModelToDTO(user)
+	dto.UpdatedAt = nil
 	return dto, result.Error
 }
 
