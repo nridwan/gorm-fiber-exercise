@@ -6,6 +6,7 @@ import (
 	"gofiber-boilerplate/modules/config"
 	"gofiber-boilerplate/modules/db"
 	"gofiber-boilerplate/modules/jwt"
+	"gofiber-boilerplate/modules/transactions"
 	"gofiber-boilerplate/modules/user"
 	"log"
 
@@ -20,6 +21,7 @@ func main() {
 		db.FxModule,
 		jwt.FxModule,
 		user.FxModule,
+		transactions.FxModule,
 		fx.Invoke(registerWebServer),
 	)
 

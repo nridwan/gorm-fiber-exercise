@@ -28,7 +28,7 @@ type UserService interface {
 	Detail(id uuid.UUID) (*userdto.UserDTO, error)
 	Delete(id uuid.UUID) error
 	Login(req *userdto.LoginDTO) (*userdto.LoginResponseDTO, error)
-	AddBalance(id uuid.UUID, balance int) (*userdto.UserDTO, error)
+	AddBalance(id uuid.UUID, balance int) (*usermodel.UserModel, error)
 }
 
 type userServiceImpl struct {
@@ -171,8 +171,12 @@ func (service *userServiceImpl) Login(req *userdto.LoginDTO) (response *userdto.
 	return
 }
 
-func (service *userServiceImpl) AddBalance(id uuid.UUID, balance int) (*userdto.UserDTO, error) {
-	var user usermodel.UserModel
+func (service *userServiceImpl) AddBalance(id uuid.UUID, balance int) (*usermodel.UserModel, error) {
+	user := usermodel.UserModel{
+		BaseModel: base.BaseModel{
+			ID: id,
+		},
+	}
 	response := service.db.Model(&user).Where("id = ? and balance >= ?", id, -balance).Update("balance", gorm.Expr("balance + ?", balance))
 	if response.Error != nil {
 		return nil, response.Error
@@ -182,7 +186,7 @@ func (service *userServiceImpl) AddBalance(id uuid.UUID, balance int) (*userdto.
 		return nil, fiber.NewError(400, "Balance is not enough")
 	}
 
-	return service.Detail(id)
+	return &user, service.db.Model(&user).First(&user).Error
 }
 
 // impl `UserService` end
