@@ -12,6 +12,11 @@ Features:
 - Gorm database model
 - JWT auth
 
+## Requirement
+
+- Golang
+- Postgresql
+
 ## How to run
 
 1. install go
