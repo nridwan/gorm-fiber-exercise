@@ -6,6 +6,7 @@ import (
 	"gofiber-boilerplate/modules/config"
 	"gofiber-boilerplate/modules/db"
 	"gofiber-boilerplate/modules/jwt"
+	"gofiber-boilerplate/modules/monitor"
 	"gofiber-boilerplate/modules/transactions"
 	"gofiber-boilerplate/modules/user"
 	"log"
@@ -18,6 +19,7 @@ func main() {
 	fxApp := fx.New(
 		config.FxModule,
 		app.FxModule,
+		monitor.FxModule,
 		db.FxModule,
 		jwt.FxModule,
 		user.FxModule,

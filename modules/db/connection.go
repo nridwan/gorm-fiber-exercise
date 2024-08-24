@@ -10,6 +10,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/plugin/opentelemetry/tracing"
 )
 
 const (
@@ -110,6 +111,9 @@ func (module *DbModule) AddConfig(profName string, config *DbProfile) {
 		module.db[profName].Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
 	}
 
+	if err := module.db[profName].Use(tracing.NewPlugin()); err != nil {
+		panic(err)
+	}
 }
 
 // RemoveConfig = remove configuration

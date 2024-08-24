@@ -12,6 +12,7 @@ Features:
 - Gorm database model
 - JWT auth
 - Atlas Migration
+- OpenTelemetry
 
 ## Requirement
 
@@ -78,3 +79,19 @@ On windows, I suggest this step:
 
 - run `atlas migrate apply --url "yourdatabaseurl"`
   - example: `atlas migrate apply --url "postgres://postgres@127.0.0.1:5432/golang?sslmode=disable"`
+
+## Process Monitoring
+
+Open `{{BASE_URL}}/monitor` in browser to see. You can disable this by removing the route in `monitor/route.go`
+
+## Opentelemetry
+
+auto integrated for gofiber endpoint and database performance.
+but sadly I can't find a way to make the database query become span inside fiber logging.
+
+### How to collect and see the traces
+
+Known choices:
+
+- [jaeger](https://www.jaegertracing.io/docs/1.60/getting-started)
+- [tempo+grafana](https://github.com/grafana/tempo/tree/main/example/docker-compose/local)
