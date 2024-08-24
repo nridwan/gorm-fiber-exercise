@@ -11,7 +11,6 @@ Features:
 - Hot Reload
 - Gorm database model
 - JWT auth
-- Atlas migration
 
 ## How to run
 
