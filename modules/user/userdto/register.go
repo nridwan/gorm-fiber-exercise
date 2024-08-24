@@ -12,12 +12,10 @@ type RegisterDTO struct {
 
 func (dto *RegisterDTO) ToModel() *usermodel.UserModel {
 	return &usermodel.UserModel{
-		ReadonlyUserModel: usermodel.ReadonlyUserModel{
-			FirstName:   dto.FirstName,
-			LastName:    dto.LastName,
-			PhoneNumber: dto.PhoneNumber,
-			Address:     dto.Address,
-		},
-		Pin: &dto.Pin,
+		FirstName:   dto.FirstName,
+		LastName:    dto.LastName,
+		PhoneNumber: dto.PhoneNumber,
+		Address:     dto.Address,
+		Pin:         &dto.Pin,
 	}
 }

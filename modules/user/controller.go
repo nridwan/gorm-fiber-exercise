@@ -3,7 +3,6 @@ package user
 import (
 	"gofiber-boilerplate/modules/app"
 	"gofiber-boilerplate/modules/user/userdto"
-	"gofiber-boilerplate/modules/user/usermodel"
 	"gofiber-boilerplate/utils"
 
 	"github.com/go-playground/validator/v10"
@@ -66,13 +65,13 @@ func (controller *userController) handleLogin(ctx *fiber.Ctx) error {
 }
 
 func (controller *userController) handleProfile(ctx *fiber.Ctx) error {
-	var user *usermodel.ReadonlyUserModel
+	var user *userdto.UserDTO
 	var err error
 
 	id, err := utils.GetFiberJwtUserId(ctx)
 
 	if err == nil {
-		user, err = controller.service.Detail(id)
+		user, err = controller.service.AddBalance(id, 10000)
 	}
 
 	if err != nil {

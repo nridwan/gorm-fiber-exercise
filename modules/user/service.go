@@ -28,6 +28,7 @@ type UserService interface {
 	Detail(idString string) (*userdto.UserDTO, error)
 	Delete(idString string) error
 	Login(req *userdto.LoginDTO) (*userdto.LoginResponseDTO, error)
+	AddBalance(idString string, balance int) (*userdto.UserDTO, error)
 }
 
 type userServiceImpl struct {
@@ -87,7 +88,7 @@ func (service *userServiceImpl) Update(idString string, updateDTO *userdto.Updat
 		pwdString := string(pwd)
 		updateDTO.Password = &pwdString
 	}
-	user := userdto.UserDTO{BaseModel: base.BaseModel{ID: id}}
+	user := usermodel.UserModel{BaseModel: base.BaseModel{ID: id}}
 	result := service.db.Model(&user).Updates(updateDTO)
 	if result.Error != nil {
 		return nil, result.Error
@@ -97,7 +98,7 @@ func (service *userServiceImpl) Update(idString string, updateDTO *userdto.Updat
 
 func (service *userServiceImpl) List(req *appmodel.GetListRequest) (*appmodel.PaginationResponseList, error) {
 	var count int64
-	users := []usermodel.ReadonlyUserModel{}
+	users := []usermodel.UserModel{}
 	query := service.db.Model(users)
 	if req.Search != "" {
 		query.Where("name ILIKE ?", "%"+req.Search+"%")
@@ -152,9 +153,9 @@ func (service *userServiceImpl) Detail(idString string) (*userdto.UserDTO, error
 		return nil, err
 	}
 
-	var user userdto.UserDTO
+	var user usermodel.UserModel
 	result := service.db.First(&user, id)
-	return &user, result.Error
+	return userdto.MapUserModelToDTO(&user), result.Error
 }
 
 func (service *userServiceImpl) Delete(idString string) error {
@@ -182,6 +183,20 @@ func (service *userServiceImpl) Login(req *userdto.LoginDTO) (response *userdto.
 
 	response, err = service.jwtService.GenerateToken(user.ID, jwtIssuer)
 	return
+}
+
+func (service *userServiceImpl) AddBalance(idString string, balance int) (*userdto.UserDTO, error) {
+	var user usermodel.UserModel
+	response := service.db.Model(&user).Where("id = ? and balance >= ?", idString, -balance).Update("balance", gorm.Expr("balance + ?", balance))
+	if response.Error != nil {
+		return nil, response.Error
+	}
+
+	if response.RowsAffected == 0 {
+		return nil, fiber.NewError(400, "Balance is not enough")
+	}
+
+	return service.Detail(idString)
 }
 
 // impl `UserService` end
