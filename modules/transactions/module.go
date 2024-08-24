@@ -40,6 +40,7 @@ func (module *TransactionModule) OnStart() error {
 }
 
 func (module *TransactionModule) OnStop() error {
+	module.Service.Destroy()
 	return nil
 }
 

@@ -101,4 +101,20 @@ func (controller *TransactionController) handleTransfer(ctx *fiber.Ctx) error {
 	return controller.responseService.SendSuccessResponse(ctx, 201, model)
 }
 
+func (controller *TransactionController) handleReport(ctx *fiber.Ctx) error {
+	id, err := utils.GetFiberJwtUserId(ctx)
+
+	if err != nil {
+		return fiber.NewError(400, err.Error())
+	}
+
+	model, err := controller.service.Report(id)
+
+	if err != nil {
+		return fiber.NewError(400, err.Error())
+	}
+
+	return controller.responseService.SendSuccessResponse(ctx, 201, model)
+}
+
 // handlers end

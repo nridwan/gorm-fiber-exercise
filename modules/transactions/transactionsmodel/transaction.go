@@ -14,6 +14,7 @@ type TrxType string
 const (
 	Success TrxStatus = "SUCCESS"
 	Pending TrxStatus = "PENDING"
+	Failed  TrxStatus = "FAILED"
 
 	TypeDebit  TrxType = "DEBIT"
 	TypeCredit TrxType = "CREDIT"
@@ -38,5 +39,5 @@ type TransactionModel struct {
 }
 
 func (TransactionModel) TableName() string {
-	return "Transactions"
+	return "transactions"
 }
