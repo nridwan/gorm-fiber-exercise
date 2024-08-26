@@ -28,3 +28,10 @@ Features:
 3. setup `.env`, see `.env.example`, self explanatory enough to be copied to `.env`
 4. run `go mod download`
 5. run `air`
+
+### Extras
+see [feat/extras](https://github.com/nridwan/gorm-fiber-exercise/tree/feat/extras) for more feature like:
+- manual migration with atlas
+- opentelemetry integration
+
+Reason still not merged: opentelemetry endpoint span can't be one with database query span, will look for more information first before giving up
